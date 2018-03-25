@@ -1,9 +1,9 @@
 #!flask/bin/python
 import json
 from flask import Flask, Response, request, render_template
-from helloworld.flaskrun import flaskrun
+from flaskrun import flaskrun
+from bl import ip_meta
 import requests
-#import boto3
 
 application = Flask(__name__)
 
@@ -19,10 +19,7 @@ def get_temp(temp):
 @application.route('/tst/<temp>', methods=['GET'])
 def tst_temp(temp):
     user_ip = str(request.environ['REMOTE_ADDR'])
-    service_url = 'http://freegeoip.net/json/{}'.format(user_ip) 
-    response = requests.get(service_url).json()
-    #return render_template('index.html', title='Stats', response=response) 
-    return Response(json.dumps({'{}'.format(str(temp)) : '{}'.format(response)}), mimetype='application/json', status=200)
+    return (ip_meta(user_ip, temp))
 
 @application.route('/', methods=['GET'])
 def get():
