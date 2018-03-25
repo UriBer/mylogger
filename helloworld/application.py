@@ -1,8 +1,8 @@
 #!flask/bin/python
 import json
 from flask import Flask, Response, request, render_template
-from flaskrun import flaskrun
-from bl import ip_meta
+from helloworld.flaskrun import flaskrun
+#from helloworld.bl import ip_meta
 import requests
 
 application = Flask(__name__)
@@ -15,12 +15,12 @@ def get_temp(temp):
     return render_template('index.html', title='Stats', response=response) 
     # Response(json.dumps({'ip address': '{}'.format(response)}), mimetype='application/json', status=200)
 
-
+'''
 @application.route('/tst/<temp>', methods=['GET'])
 def tst_temp(temp):
     user_ip = str(request.environ['REMOTE_ADDR'])
     return (ip_meta(user_ip, temp))
-
+'''
 @application.route('/', methods=['GET'])
 def get():
     return Response(json.dumps({'Output': 'Hello World'}), mimetype='application/json', status=200)
