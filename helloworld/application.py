@@ -12,8 +12,8 @@ def get_temp(temp):
     user_ip = str(request.environ['REMOTE_ADDR'])
     service_url = 'http://freegeoip.net/json/{}'.format(user_ip) 
     response = requests.get(service_url).json()
-    return render_template('index.html', title='Stats', response=response) 
-    # Response(json.dumps({'ip address': '{}'.format(response)}), mimetype='application/json', status=200)
+    #return render_template('index.html', title='Stats', response=response) 
+    return Response(json.dumps({'ip address': '{}'.format(response)}), mimetype='application/json', status=200)
 
 '''
 @application.route('/tst/<temp>', methods=['GET'])
