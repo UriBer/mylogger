@@ -4,6 +4,8 @@ from flask import Flask, Response, request, render_template
 from helloworld.flaskrun import flaskrun
 #from helloworld.bl import ip_meta
 import requests
+import boto3
+import datetime
 
 application = Flask(__name__)
 
@@ -12,6 +14,19 @@ def get_temp(temp):
     user_ip = str(request.environ['REMOTE_ADDR'])
     service_url = 'http://freegeoip.net/json/{}'.format(user_ip) 
     response = requests.get(service_url).json()
+    dynamodb = boto3.resource('dynamodb')
+    table = dynamodb.Table('eb_logger_log')
+    res_data = {k: v for k, v in response.items() if v!=''}
+    print(res_data)
+    
+    table.put_item(
+    Item={
+        'path': temp,
+        'datetime': datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        'ip_meta' : res_data
+         }
+    )
+    
     #return render_template('index.html', title='Stats', response=response) 
     return Response(json.dumps({'ip address': '{}'.format(response)}), mimetype='application/json', status=200)
 
