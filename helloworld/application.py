@@ -1,7 +1,7 @@
 #!flask/bin/python
 import json
 from flask import Flask, Response, request, render_template
-from helloworld.flaskrun import flaskrun
+from flaskrun import flaskrun
 #from helloworld.bl import ip_meta
 import requests
 import boto3
@@ -36,12 +36,19 @@ def tst_temp(temp):
     user_ip = str(request.environ['REMOTE_ADDR'])
     return (ip_meta(user_ip, temp))
 '''
-@application.route('/', methods=['GET'])
+@application.route('/bi', methods=['GET'])
 def get():
+    dynamodb = boto3.resource('dynamodb')
+    table = dynamodb.Table('eb_logger_log')
+
+    resp = table.scan()
+    print(str(resp))
     return Response(json.dumps({'Output': 'Hello World'}), mimetype='application/json', status=200)
 
 @application.route('/', methods=['POST'])
 def post():
+    response = client.batch_get_item( RequestItems={ })
+    print(response)
     return Response(json.dumps({'Output': 'Hello World'}), mimetype='application/json', status=200)
 
 
