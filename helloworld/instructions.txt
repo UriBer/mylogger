@@ -1,11 +1,22 @@
-   19  python3
+
    20  python3 -m venv .mylogger
-   21  ls -a
    22  . .mylogger/bin/activate
-   23  pip3 instal
    24  pip3 install -r requirements.txt 
-   25  pip3 list
-   26  cd helloworld/
    27  python3 application.py 
    28  history 10 > instructions.txt
 sudo yum install curl
+
+to debud in eb container: 
+ssh to it using the key
+the code is located at /opt/python/current/app
+venv is @ opt/python/run/venv 
+
+
+logs 
+    /var/log/eb-activity.log
+
+    /var/log/eb-commandprocessor.log
+
+    /var/log/eb-version-deployment.log
+
+

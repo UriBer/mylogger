@@ -1,7 +1,10 @@
 #!flask/bin/python
 import json
 from flask import Flask, Response, request, render_template
-from flaskrun import flaskrun
+# for prod use
+from helloworld.flaskrun import flaskrun
+# for dev use
+#from flaskrun import flaskrun
 #from helloworld.bl import ip_meta
 import requests
 import boto3
