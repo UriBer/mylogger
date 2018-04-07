@@ -5,12 +5,12 @@
    27  python3 application.py 
    28  history 10 > instructions.txt
 sudo yum install curl
-
+in c9 machine python resides in /opt/c9/python
+install python 2: virtualenv -p /opt/c9/python2/bin/python27 .venv
 to debud in eb container: 
 ssh to it using the key
 the code is located at /opt/python/current/app
 venv is @ opt/python/run/venv 
-
 
 logs 
     /var/log/eb-activity.log

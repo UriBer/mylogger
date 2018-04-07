@@ -2,9 +2,9 @@
 import json
 from flask import Flask, Response, request, render_template
 # for prod use
-from helloworld.flaskrun import flaskrun
+#from helloworld.flaskrun import flaskrun
 # for dev use
-#from flaskrun import flaskrun
+from flaskrun import flaskrun
 #from helloworld.bl import ip_meta
 import requests
 import boto3
@@ -29,8 +29,13 @@ def get_temp(temp):
         'ip_meta' : res_data
          }
     )
-    
-    #return render_template('index.html', title='Stats', response=response) 
+
+@application.route('/test/<temp>', methods=['GET'])
+def get_test(temp):
+    user_ip = str(request.environ['REMOTE_ADDR'])
+    service_url = 'http://freegeoip.net/json/{}'.format(user_ip) 
+    response = requests.get(service_url).json()
+
     return Response(json.dumps({'ip address': '{}'.format(response)}), mimetype='application/json', status=200)
 
 '''
@@ -50,8 +55,8 @@ def get():
 
 @application.route('/', methods=['POST'])
 def post():
-    response = client.batch_get_item( RequestItems={ })
-    print(response)
+    # response = client.batch_get_item( RequestItems={ })
+    # print(response)
     return Response(json.dumps({'Output': 'Hello World'}), mimetype='application/json', status=200)
 
 
