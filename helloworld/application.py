@@ -1,16 +1,20 @@
 #!flask/bin/python
 import json
 from flask import Flask, Response, request, render_template
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(sys.path[0])))
 # for prod use
-#from helloworld.flaskrun import flaskrun
+from helloworld.flaskrun import flaskrun
 # for dev use
-from flaskrun import flaskrun
+#from flaskrun import flaskrun
 #from helloworld.bl import ip_meta
 import requests
 import boto3
 import datetime
 
+
 application = Flask(__name__)
+
 
 @application.route('/temp/<temp>', methods=['GET'])
 def get_temp(temp):
