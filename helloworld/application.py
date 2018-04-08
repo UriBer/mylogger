@@ -1,26 +1,34 @@
-#!flask/bin/python
-import json
-from flask import Flask, Response, request, render_template
+# append to path in dev, in prod it's part of the path
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(sys.path[0])))
-# for prod use
+
+from flask import Flask, Response, request, render_template
 from helloworld.flaskrun import flaskrun
-# for dev use
-#from flaskrun import flaskrun
-#from helloworld.bl import ip_meta
 import requests
-import boto3
 import datetime
+import json
+import boto3
 
 
 application = Flask(__name__)
 
 
+@application.route('/test/<temp>', methods=['GET'])
+def get_test(temp):
+    response = get_ip_meta()
+    return Response(json.dumps({'ip address': '{}'.format(response)}), mimetype='application/json', status=200)
+
+
+@application.route('/page/<temp>', methods=['GET'])
+def get_page(temp):
+    response = get_ip_meta()
+    return render_template('index.html', response=response, title=temp)
+    #Response(json.dumps({'ip address': '{}'.format(response)}), mimetype='application/json', status=200)
+
+
 @application.route('/temp/<temp>', methods=['GET'])
 def get_temp(temp):
-    user_ip = str(request.environ['REMOTE_ADDR'])
-    service_url = 'http://freegeoip.net/json/{}'.format(user_ip) 
-    response = requests.get(service_url).json()
+    response = get_ip_meta()
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table('eb_logger_log')
     res_data = {k: v for k, v in response.items() if v!=''}
@@ -34,13 +42,6 @@ def get_temp(temp):
          }
     )
 
-@application.route('/test/<temp>', methods=['GET'])
-def get_test(temp):
-    user_ip = str(request.environ['REMOTE_ADDR'])
-    service_url = 'http://freegeoip.net/json/{}'.format(user_ip) 
-    response = requests.get(service_url).json()
-
-    return Response(json.dumps({'ip address': '{}'.format(response)}), mimetype='application/json', status=200)
 
 '''
 @application.route('/tst/<temp>', methods=['GET'])
@@ -57,12 +58,17 @@ def get():
     print(str(resp))
     return Response(json.dumps({'Output': 'Hello World'}), mimetype='application/json', status=200)
 
-@application.route('/', methods=['POST'])
+@application.route('/', methods=['GET'])
 def post():
     # response = client.batch_get_item( RequestItems={ })
     # print(response)
     return Response(json.dumps({'Output': 'Hello World'}), mimetype='application/json', status=200)
 
+
+def get_ip_meta():
+    user_ip = str(request.environ['REMOTE_ADDR'])
+    service_url = 'http://freegeoip.net/json/{}'.format(user_ip) 
+    return requests.get(service_url).json()
 
 if __name__ == '__main__':
     flaskrun(application)
