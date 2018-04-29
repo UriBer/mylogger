@@ -29,19 +29,18 @@ def get_page(temp):
 @application.route('/temp/<temp>', methods=['GET'])
 def get_temp(temp):
     response = get_ip_meta()
-    dynamodb = boto3.resource('dynamodb')
+    dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
     table = dynamodb.Table('eb_logger_log')
     res_data = {k: v for k, v in response.items() if v!=''}
     print(res_data)
+    item={
+    'path': temp,
+    'datetime': datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+    'ip_meta' : res_data
+     }
+    table.put_item(Item=item)
     
-    table.put_item(
-    Item={
-        'path': temp,
-        'datetime': datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        'ip_meta' : res_data
-         }
-    )
-
+    return Response(json.dumps(item), mimetype='application/json', status=200)
 
 '''
 @application.route('/tst/<temp>', methods=['GET'])
@@ -51,12 +50,12 @@ def tst_temp(temp):
 '''
 @application.route('/bi', methods=['GET'])
 def get():
-    dynamodb = boto3.resource('dynamodb')
+    dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
     table = dynamodb.Table('eb_logger_log')
-
+    # replace table scan
     resp = table.scan()
     print(str(resp))
-    return Response(json.dumps({'Output': 'Hello World'}), mimetype='application/json', status=200)
+    return Response(json.dumps(str(resp)), mimetype='application/json', status=200)
 
 @application.route('/', methods=['GET'])
 def post():
@@ -67,7 +66,7 @@ def post():
 
 def get_ip_meta():
     user_ip = str(request.environ['REMOTE_ADDR'])
-    service_url = 'http://freegeoip.net/json/{}'.format(user_ip) 
+    service_url = 'http://ipinfo.io/{}'.format(user_ip) 
     return requests.get(service_url).json()
 
 if __name__ == '__main__':
